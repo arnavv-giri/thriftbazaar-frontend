@@ -1,33 +1,56 @@
-import { useEffect, useState } from "react";
-import { testBackend } from "./api/testApi";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ProductDetails from "./pages/ProductDetails";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import Payment from "./pages/Payment";
+import Orders from "./pages/Orders";
+import ContactSeller from "./pages/ContactSeller";
+import SellerDashboard from "./pages/SellerDashboard";
 import "./App.css";
 
 function App() {
-  const [status, setStatus] = useState("loading");
-
-  useEffect(() => {
-    const checkBackend = async () => {
-      try {
-        const res = await testBackend();
-        console.log("Backend response:", res);
-        setStatus("ok");
-      } catch (err) {
-        console.error("Backend error:", err);
-        setStatus("error");
-      }
-    };
-
-    checkBackend();
-  }, []);
-
   return (
-    <div style={{ padding: "40px", color: "white" }}>
-      <h1>ThriftBazaar Frontend Running</h1>
+    <ErrorBoundary>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <Navbar />
+            <main className="app-main">
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-      {status === "loading" && <p>Checking backend...</p>}
-      {status === "ok" && <p>Backend is healthy ✅</p>}
-      {status === "error" && <p>Backend not reachable ❌</p>}
-    </div>
+                {/* Product Routes */}
+                <Route path="/product/:id" element={<ProductDetails />} />
+
+                {/* Shopping Routes */}
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/payment" element={<Payment />} />
+
+                {/* User Routes */}
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/contact-seller/:sellerId" element={<ContactSeller />} />
+
+                {/* Seller Routes */}
+                <Route path="/dashboard" element={<SellerDashboard />} />
+              </Routes>
+            </main>
+            <Footer />
+          </BrowserRouter>
+        </CartProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
