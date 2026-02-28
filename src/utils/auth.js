@@ -35,4 +35,28 @@ export function getUserRole() {
   } catch {
     return null;
   }
+  
+}
+export function getUserEmail() {
+
+  const token = localStorage.getItem("token");
+
+  if (!token) return null;
+
+  try {
+
+    const payload =
+      JSON.parse(
+        atob(token.split(".")[1])
+      );
+
+    return payload.sub;
+
+  }
+  catch {
+
+    return null;
+
+  }
+
 }
