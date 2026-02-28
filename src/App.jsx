@@ -4,6 +4,7 @@ import { CartProvider } from "./context/CartContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -14,44 +15,115 @@ import Payment from "./pages/Payment";
 import Orders from "./pages/Orders";
 import ContactSeller from "./pages/ContactSeller";
 import SellerDashboard from "./pages/SellerDashboard";
+
 import "./App.css";
 
 function App() {
+
   return (
+
     <ErrorBoundary>
+
       <AuthProvider>
+
         <CartProvider>
+
           <BrowserRouter>
+
             <Navbar />
+
             <main className="app-main">
+
               <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
 
-                {/* Product Routes */}
-                <Route path="/product/:id" element={<ProductDetails />} />
+                {/* PUBLIC */}
+                <Route
+                  path="/"
+                  element={<Home />}
+                />
 
-                {/* Shopping Routes */}
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/payment" element={<Payment />} />
+                <Route
+                  path="/login"
+                  element={<Login />}
+                />
 
-                {/* User Routes */}
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/contact-seller/:sellerId" element={<ContactSeller />} />
+                <Route
+                  path="/register"
+                  element={<Register />}
+                />
 
-                {/* Seller Routes */}
-                <Route path="/dashboard" element={<SellerDashboard />} />
+
+                {/* PRODUCT */}
+                <Route
+                  path="/product/:id"
+                  element={<ProductDetails />}
+                />
+
+
+                {/* SHOPPING */}
+                <Route
+                  path="/cart"
+                  element={<Cart />}
+                />
+
+                <Route
+                  path="/checkout"
+                  element={<Checkout />}
+                />
+
+                <Route
+                  path="/payment"
+                  element={<Payment />}
+                />
+
+
+                {/* USER */}
+                <Route
+                  path="/orders"
+                  element={<Orders />}
+                />
+
+                <Route
+                  path="/contact-seller/:sellerId"
+                  element={<ContactSeller />}
+                />
+
+
+                {/* SELLER DASHBOARD */}
+                <Route
+                  path="/dashboard"
+                  element={<SellerDashboard />}
+                />
+
+                {/* alias (prevents vendor/dashboard error) */}
+                <Route
+                  path="/vendor/dashboard"
+                  element={<SellerDashboard />}
+                />
+
+
+                {/* fallback */}
+                <Route
+                  path="*"
+                  element={<Home />}
+                />
+
               </Routes>
+
             </main>
+
             <Footer />
+
           </BrowserRouter>
+
         </CartProvider>
+
       </AuthProvider>
+
     </ErrorBoundary>
+
   );
+
 }
 
 export default App;

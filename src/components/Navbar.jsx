@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { getUserRole } from "../utils/auth"; // ✅ added
 import Button from "./Button";
 import "./Navbar.css";
 
@@ -8,6 +9,9 @@ function Navbar() {
   const { isLoggedIn, logout } = useAuth();
   const { getTotalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const role = getUserRole(); // ✅ detect role
+
   const cartCount = getTotalItems();
 
   const handleLogout = () => {
@@ -20,6 +24,8 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
+
+        {/* Logo */}
         <a href="/" className="navbar-brand" onClick={closeMobileMenu}>
           <div className="logo-wrapper">
             <span className="logo-icon">♻️</span>
@@ -27,6 +33,7 @@ function Navbar() {
           </div>
         </a>
 
+        {/* Mobile Toggle */}
         <button
           className="navbar-toggle"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -36,28 +43,46 @@ function Navbar() {
         </button>
 
         <div className={`navbar-menu ${menuOpen ? "open" : ""}`}>
+
+          {/* Links */}
           <div className="navbar-links">
+
             <a href="/" onClick={closeMobileMenu}>
               Home
             </a>
+
             <a href="/#products" onClick={closeMobileMenu}>
               Products
             </a>
+
+            {/* ✅ Vendor-only link */}
+            {role === "VENDOR" && (
+              <a href="/add-product" onClick={closeMobileMenu}>
+                Add Product
+              </a>
+            )}
+
           </div>
 
+          {/* Actions */}
           <div className="navbar-actions">
-            {/* Cart Link */}
+
+            {/* Cart */}
             <a href="/cart" className="cart-link" onClick={closeMobileMenu}>
               <span className="cart-icon">🛒</span>
               Cart
-              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+              {cartCount > 0 && (
+                <span className="cart-badge">{cartCount}</span>
+              )}
             </a>
 
-            {/* Orders Link */}
-            <a href="/orders" className="orders-link" onClick={closeMobileMenu}>
-              <span className="orders-icon">📦</span>
-              Orders
-            </a>
+            {/* Orders (customer only) */}
+            {role === "CUSTOMER" && (
+              <a href="/orders" className="orders-link" onClick={closeMobileMenu}>
+                <span className="orders-icon">📦</span>
+                Orders
+              </a>
+            )}
 
             {/* Auth Buttons */}
             {!isLoggedIn ? (
@@ -71,6 +96,7 @@ function Navbar() {
                     Sign In
                   </a>
                 </Button>
+
                 <Button
                   variant="primary"
                   size="sm"
@@ -83,15 +109,33 @@ function Navbar() {
               </>
             ) : (
               <>
-                <Button
-                  variant="tertiary"
-                  size="sm"
-                  onClick={closeMobileMenu}
-                >
-                  <a href="/dashboard" style={{ color: "inherit" }}>
-                    Dashboard
-                  </a>
-                </Button>
+                {/* Vendor Dashboard */}
+                {role === "VENDOR" && (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={closeMobileMenu}
+                  >
+                    <a href="/vendor/dashboard" style={{ color: "inherit" }}>
+                      Vendor Dashboard
+                    </a>
+                  </Button>
+                )}
+
+                {/* Customer dashboard */}
+                {role === "CUSTOMER" && (
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    onClick={closeMobileMenu}
+                  >
+                    <a href="/orders" style={{ color: "inherit" }}>
+                      My Orders
+                    </a>
+                  </Button>
+                )}
+
+                {/* Logout */}
                 <Button
                   variant="danger"
                   size="sm"
@@ -101,6 +145,7 @@ function Navbar() {
                 </Button>
               </>
             )}
+
           </div>
         </div>
       </div>
