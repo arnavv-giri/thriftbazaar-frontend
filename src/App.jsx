@@ -4,9 +4,10 @@ import { CartProvider } from "./context/CartContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
+import Shop from "./pages/Shop";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import About from "./pages/About";
 import Register from "./pages/Register";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
@@ -46,6 +47,8 @@ function App() {
                   path="/login"
                   element={<Login />}
                 />
+                <Route path="/shop" element={<Shop />} />
+                
 
                 <Route
                   path="/register"

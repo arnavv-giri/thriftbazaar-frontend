@@ -106,12 +106,48 @@ function AddProductModal({ onClose, onAdd }) {
           />
 
 
-          <select value={category} onChange={e=>setCategory(e.target.value)}>
-            <option value="TSHIRTS">T-Shirt</option>
-            <option value="JEANS">Jeans</option>
-            <option value="SHIRTS">Shirts</option>
-            <option value="JACKETS">Jackets</option>
-          </select>
+          <select
+  value={category}
+  onChange={e=>setCategory(e.target.value)}
+>
+
+  <option value="TSHIRTS">
+    T-Shirts
+  </option>
+
+  <option value="SHIRTS">
+    Shirts
+  </option>
+
+  <option value="JEANS">
+    Jeans
+  </option>
+
+  <option value="JACKETS">
+    Jackets
+  </option>
+
+  <option value="DRESSES">
+    Dresses
+  </option>
+
+  <option value="ACCESSORIES">
+    Accessories
+  </option>
+
+  <option value="SHOES">
+    Shoes
+  </option>
+
+  <option value="HOODIES">
+    Hoodies
+  </option>
+
+  <option value="SWEATERS">
+    Sweaters
+  </option>
+
+</select>
 
 
           <select value={condition} onChange={e=>setCondition(e.target.value)}>

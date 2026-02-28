@@ -1,0 +1,79 @@
+.reviews{
+
+  padding:120px 8%;
+
+  background:#fafafa;
+
+  text-align:center;
+
+}
+
+.reviews-label{
+
+  letter-spacing:4px;
+
+  font-size:12px;
+
+  margin-bottom:10px;
+
+  opacity:.6;
+
+}
+
+.reviews h2{
+
+  font-family:"Playfair Display", serif;
+
+  font-size:44px;
+
+  margin-bottom:60px;
+
+}
+
+.reviews-grid{
+
+  display:grid;
+
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+  gap:40px;
+
+}
+
+.review-card{
+
+  background:white;
+
+  padding:40px;
+
+  border-radius:4px;
+
+  box-shadow:0 10px 30px rgba(0,0,0,0.05);
+
+  text-align:left;
+
+}
+
+.review-card p{
+
+  font-size:16px;
+
+  line-height:1.7;
+
+  margin-bottom:20px;
+
+}
+
+.review-user strong{
+
+  display:block;
+
+}
+
+.review-user span{
+
+  font-size:13px;
+
+  opacity:.6;
+
+}
