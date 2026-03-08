@@ -75,6 +75,18 @@ export async function updateOrderStatus(orderId, status) {
 }
 
 /**
+ * Allows the authenticated CUSTOMER to cancel their own order.
+ * Only works when the order is PENDING or PROCESSING.
+ *
+ * @param {number} orderId
+ * @returns {OrderResponseDto}
+ */
+export async function cancelMyOrder(orderId) {
+  const res = await api.post(`/orders/${orderId}/cancel`);
+  return res.data;
+}
+
+/**
  * Returns orders received for the authenticated vendor's products.
  * Only VENDOR role can call this.
  *

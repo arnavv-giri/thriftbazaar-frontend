@@ -11,14 +11,14 @@ const reviews = [
   },
 
   {
-    name: "Vansh Sharma",
+    name: "Vansh Dhama",
     role: "Seller",
     text:
       "I made ₹18,000 selling clothes I never wore. The platform is incredibly smooth.",
   },
 
   {
-    name: "Arnav Mehta",
+    name: "Arnav Giri",
     role: "Customer",
     text:
       "Clean interface, trusted sellers, and amazing pieces you won't find elsewhere.",

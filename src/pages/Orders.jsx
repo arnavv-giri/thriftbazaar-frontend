@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { getMyOrders, updateOrderStatus } from "../api/orderApi";
+import { getMyOrders, cancelMyOrder } from "../api/orderApi";
 import Button from "../components/Button";
 import "./Orders.css";
 
@@ -100,7 +100,7 @@ function Orders() {
     setActionError("");
     setCancelling(true);
     try {
-      const updated = await updateOrderStatus(orderId, "CANCELLED");
+      const updated = await cancelMyOrder(orderId);
       // Update both the list and the selected detail panel atomically
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? updated : o))
