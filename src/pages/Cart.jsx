@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getUserEmail } from "../utils/auth";
 import Button from "../components/Button";
 import "./Cart.css";
 
@@ -10,48 +11,60 @@ function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getCartKey = () => {
+    const email = getUserEmail();
+    return email ? `cart_${email}` : "cart";
+  };
+
   useEffect(() => {
-    // Wait for auth to finish loading before checking login status
-    if (authLoading) {
-      return;
-    }
+    if (authLoading) return;
 
     if (!isLoggedIn) {
       navigate("/login");
       return;
     }
 
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const key = getCartKey();
+    const cart = JSON.parse(localStorage.getItem(key)) || [];
     setCartItems(cart);
     setLoading(false);
   }, [isLoggedIn, authLoading, navigate]);
 
-  const handleRemoveItem = (cartItemId) => {
-    const updatedCart = cartItems.filter((item) => item.cartItemId !== cartItemId);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  const saveCart = (updated) => {
+    const key = getCartKey();
+    localStorage.setItem(key, JSON.stringify(updated));
+    setCartItems(updated);
   };
 
-  const handleUpdateQuantity = (cartItemId, newQuantity) => {
-    if (newQuantity < 1) return;
-    const updatedCart = cartItems.map((item) =>
-      item.cartItemId === cartItemId ? { ...item, quantity: newQuantity } : item
+  const handleRemoveItem = (productId) => {
+    saveCart(cartItems.filter((item) => item.id !== productId));
+  };
+
+  const handleUpdateQuantity = (productId, newQuantity) => {
+    if (newQuantity < 1) {
+      handleRemoveItem(productId);
+      return;
+    }
+    saveCart(
+      cartItems.map((item) =>
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      )
     );
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const totalAmount = cartItems.reduce(
+  const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const tax = Math.round(subtotal * 0.05);
+  const totalAmount = subtotal + tax;
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
       alert("Cart is empty");
       return;
     }
-    navigate("/checkout", { state: { cartItems, totalAmount } });
+    navigate("/checkout", { state: { cartItems, totalAmount: subtotal } });
   };
 
   if (loading) {
@@ -65,7 +78,7 @@ function Cart() {
 
   return (
     <div className="cart-page">
-      <button className="back-button" onClick={() => navigate("/")}>
+      <button className="back-button" onClick={() => navigate("/shop")}>
         ← Back to Shopping
       </button>
 
@@ -77,21 +90,28 @@ function Cart() {
             <div className="empty-icon">🛒</div>
             <h2>Your cart is empty</h2>
             <p>Start adding items to your cart by browsing our collection</p>
-            <Button variant="primary" size="lg" onClick={() => navigate("/")}>
+            <Button variant="primary" size="lg" onClick={() => navigate("/shop")}>
               Continue Shopping
             </Button>
           </div>
         ) : (
           <div className="cart-content">
-            {/* Cart Items */}
             <div className="cart-items">
               <div className="items-header">
                 <span>{cartItems.length} item(s) in cart</span>
               </div>
 
               {cartItems.map((item) => (
-                <div key={item.cartItemId} className="cart-item">
-                  <img src={item.images[0]} alt={item.name} className="item-image" />
+                <div key={item.id} className="cart-item">
+                  <img
+                    src={
+                      Array.isArray(item.images) && item.images.length > 0
+                        ? item.images[0]
+                        : "https://via.placeholder.com/80"
+                    }
+                    alt={item.name}
+                    className="item-image"
+                  />
 
                   <div className="item-details">
                     <h3>{item.name}</h3>
@@ -107,18 +127,18 @@ function Cart() {
                   </div>
 
                   <div className="quantity-control">
-                    <button onClick={() => handleUpdateQuantity(item.cartItemId, item.quantity - 1)}>
+                    <button onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}>
                       −
                     </button>
                     <input type="number" value={item.quantity} readOnly />
-                    <button onClick={() => handleUpdateQuantity(item.cartItemId, item.quantity + 1)}>
+                    <button onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}>
                       +
                     </button>
                   </div>
 
                   <button
                     className="remove-btn"
-                    onClick={() => handleRemoveItem(item.cartItemId)}
+                    onClick={() => handleRemoveItem(item.id)}
                   >
                     🗑️
                   </button>
@@ -126,32 +146,29 @@ function Cart() {
               ))}
             </div>
 
-            {/* Cart Summary */}
             <div className="cart-summary">
               <h2>Order Summary</h2>
 
               <div className="summary-row">
                 <span>Subtotal ({cartItems.length} items)</span>
-                <span>₹{totalAmount.toLocaleString("en-IN")}</span>
+                <span>₹{subtotal.toLocaleString("en-IN")}</span>
               </div>
 
               <div className="summary-row">
                 <span>Shipping</span>
-                <span>Free</span>
+                <span>{subtotal > 500 ? "Free" : "₹50"}</span>
               </div>
 
               <div className="summary-row">
-                <span>Tax</span>
-                <span>₹{Math.round(totalAmount * 0.05).toLocaleString("en-IN")}</span>
+                <span>Tax (5%)</span>
+                <span>₹{tax.toLocaleString("en-IN")}</span>
               </div>
 
               <div className="summary-divider"></div>
 
               <div className="summary-row total">
                 <span>Total Amount</span>
-                <span>
-                  ₹{(totalAmount + Math.round(totalAmount * 0.05)).toLocaleString("en-IN")}
-                </span>
+                <span>₹{totalAmount.toLocaleString("en-IN")}</span>
               </div>
 
               <Button
@@ -167,7 +184,7 @@ function Cart() {
                 variant="tertiary"
                 size="lg"
                 fullWidth
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/shop")}
               >
                 Continue Shopping
               </Button>

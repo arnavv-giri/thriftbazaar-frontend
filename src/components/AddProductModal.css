@@ -27,13 +27,14 @@
 .modal-content {
   background: var(--color-white);
   border-radius: var(--border-radius-lg);
-  padding: var(--spacing-2xl);
-  max-width: 600px;
+  /* Top padding slightly smaller — header has its own bottom border */
+  padding: 2rem 2rem 1.75rem;
+  max-width: 580px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 92vh;
   overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-  animation: slideUp 0.3s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  animation: slideUp 0.25s ease;
 }
 
 @keyframes slideUp {
@@ -51,82 +52,100 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-2xl);
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--spacing-lg);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .modal-header h2 {
-  font-size: var(--font-size-2xl);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  margin: 0;
 }
 
 .modal-close {
-  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #f5f5f5;
   border: none;
-  font-size: var(--font-size-xl);
+  border-radius: 50%;
+  font-size: 0.95rem;
   cursor: pointer;
   color: var(--color-text-secondary);
-  transition: color var(--transition-base);
-  padding: 0;
-  width: 30px;
-  height: 30px;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
 }
 
 .modal-close:hover {
+  background: #ebebeb;
   color: var(--color-text-primary);
 }
 
 .modal-form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 1.1rem;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-lg);
+  gap: 1rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 0.35rem;
 }
 
 .form-group label {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #555;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-base);
-  font-family: var(--font-family);
-  transition: all var(--transition-base);
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--color-text-primary);
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  /* Ensure selects match inputs visually */
+  appearance: auto;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: var(--color-primary-beige);
-  box-shadow: 0 0 0 3px rgba(214, 191, 167, 0.1);
+  outline: none;
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.07);
 }
 
 .form-group input:disabled,
 .form-group select:disabled,
 .form-group textarea:disabled {
-  background: #f5f5f5;
+  background: #f8f8f8;
+  color: #aaa;
   cursor: not-allowed;
 }
 
 .form-group textarea {
   resize: vertical;
+  min-height: 80px;
 }
 
 .error-text {
@@ -137,14 +156,32 @@
 
 .modal-actions {
   display: flex;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--color-border);
-  padding-top: var(--spacing-lg);
+  /* Cancel on left is smaller; Submit takes the remaining space */
+  align-items: center;
 }
 
-.modal-actions .btn {
+.modal-actions .btn:last-child {
   flex: 1;
+}
+
+/* File input — override browser default to look consistent */
+.form-group input[type="file"] {
+  padding: 0.6rem 0.85rem;
+  border: 1.5px dashed #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.form-group input[type="file"]:hover {
+  border-color: #1a1a1a;
+  background: #f5f5f5;
 }
 
 @media (max-width: 768px) {

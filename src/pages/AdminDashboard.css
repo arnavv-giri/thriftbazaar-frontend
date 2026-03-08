@@ -1,0 +1,121 @@
+/* ── Layout ─────────────────────────────────────────────────────────────────── */
+.admin-dashboard {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1.5rem 4rem;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+.admin-header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 1rem;
+}
+
+.admin-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.admin-header p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* ── States ─────────────────────────────────────────────────────────────────── */
+.admin-loading,
+.admin-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 0;
+  gap: 1rem;
+  color: #666;
+}
+
+.admin-error {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  color: #c53030;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Table ──────────────────────────────────────────────────────────────────── */
+.vendor-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+}
+
+.vendor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.vendor-table thead {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.vendor-table th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.vendor-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.vendor-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.vendor-table tbody tr:hover {
+  background: #fafafa;
+}
+
+/* ── Badge ──────────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge--pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge--approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────────────── */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e5e5;
+  border-top-color: #1a1a1a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

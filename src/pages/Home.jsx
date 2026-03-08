@@ -26,27 +26,20 @@ function Home() {
   },[]);
 
 
-  const loadProducts = async ()=>{
-
-    try{
-
-      const res =
-        await api.get("/products");
-
+  const loadProducts = async () => {
+    try {
+      // Request only the 8 most recent products for the homepage preview.
+      // Without an explicit size the controller defaults to 12, but 8 is
+      // sufficient for a preview row and reduces payload + render cost.
+      // The response is a List<ProductResponseDto> from the legacy endpoint
+      // (not a paginated envelope) so we read res.data directly.
+      const res = await api.get("/products?size=8&page=0");
       setProducts(res.data);
-
-    }
-    catch{
-
+    } catch {
       setProducts([]);
-
-    }
-    finally{
-
+    } finally {
       setLoading(false);
-
     }
-
   };
 
 

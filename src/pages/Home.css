@@ -1,7 +1,12 @@
-.home{
-
-  background:white;
-
+.home {
+  background: white;
+  /*
+    The hero is a full-bleed image that deliberately extends behind the
+    fixed navbar. Pull the whole page up by 80px to undo <main>'s
+    padding-top, then the hero's height:100vh covers the full viewport
+    from top to bottom including the navbar area.
+  */
+  margin-top: -80px;
 }
 
 

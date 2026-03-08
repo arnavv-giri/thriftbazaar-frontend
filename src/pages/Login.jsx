@@ -1,35 +1,47 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 import "./Login.css";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail]     = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError]     = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    if (!email || !password) {
+    if (!email.trim() || !password) {
       setError("Please fill in all fields");
-      setLoading(false);
       return;
     }
 
+    setLoading(true);
+
     try {
-      const data = await loginUser(email, password);
-      login(data.token);
-      navigate("/");
+      const data = await loginUser(email.trim(), password);
+      // data = { token, role, email }
+      login(data.token);  // updates AuthContext (role, email, isLoggedIn)
+
+      // Route based on role
+      if (data.role === "VENDOR") {
+        navigate("/dashboard");
+      } else if (data.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid credentials");
+      // GlobalExceptionHandler returns { status, error, message, timestamp }
+      const msg = err.response?.data?.message || "Invalid email or password";
+      setError(msg);
       setLoading(false);
     }
   };
@@ -54,6 +66,7 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
+              autoComplete="email"
             />
           </div>
 
@@ -66,23 +79,17 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
+              autoComplete="current-password"
             />
           </div>
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            fullWidth
-            loading={loading}
-          >
+          <Button type="submit" variant="primary" size="md" fullWidth loading={loading}>
             Sign In
           </Button>
         </form>
 
         <div className="login-footer">
-          <p>Don't have an account?</p>
-          <a href="/register">Create one here</a>
+          <p>Don't have an account? <Link to="/register">Create one here</Link></p>
         </div>
       </div>
     </div>

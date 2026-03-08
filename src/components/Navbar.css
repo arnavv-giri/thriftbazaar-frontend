@@ -1,100 +1,159 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   Navbar
+   Always dark background so text is visible on every page — white, beige, or
+   dark hero alike. A subtle elevation appears on scroll.
+═══════════════════════════════════════════════════════════════════════════════ */
+
 .navbar {
-
   position: fixed;
-
   top: 0;
-
   left: 0;
-
   width: 100%;
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  padding: 22px 60px;
-
   z-index: 1000;
 
-  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 60px;
+  height: 80px;
 
-  color: white;
+  /* Solid dark — readable on every background, every page */
+  background: #1a1a1a;
+  color: #ffffff;
 
-  transition: all 0.35s ease;
+  /* Always show a subtle bottom edge so the navbar is clearly separated
+     from white-background pages even before the user scrolls */
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
 
+  transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 
-
-/* SCROLL STATE */
-
+/* Scrolled: deepen the shadow for elevation feedback */
 .navbar.scrolled {
-
-  background: white;
-
-  color: black;
-
-  box-shadow: 0 2px 20px rgba(0,0,0,0.05);
-
+  background: #111111;
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
 }
 
-
-/* LOGO */
-
+/* ── Logo ────────────────────────────────────────────────────────────────────── */
 .nav-logo {
-
   font-family: "Playfair Display", serif;
-
-  font-size: 34px;
-
+  font-size: 26px;
   font-weight: 900;
-
-  letter-spacing: 7px;
-
+  letter-spacing: 6px;
   cursor: pointer;
-
+  color: #ffffff;
+  user-select: none;
+  white-space: nowrap;
+  transition: opacity 0.15s;
 }
+.nav-logo:hover { opacity: 0.8; }
 
-
-/* LINKS */
-
+/* ── Link groups ─────────────────────────────────────────────────────────────── */
 .nav-left,
 .nav-right {
-
   display: flex;
-
-  gap: 32px;
-
+  align-items: center;
+  gap: 28px;
 }
 
-
+/* ── Nav link buttons ───────────────────────────────────────────────────────── */
 .nav-link {
-
   background: none;
-
   border: none;
-
   font-family: "Inter", sans-serif;
-
-  font-size: 15px;        /* increased */
-
-  font-weight: 600;       /* bold */
-
-  letter-spacing: 2.5px;
-
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   cursor: pointer;
-
-  color: inherit;
-
-  opacity: 0.95;
-
+  /* Full white — always visible regardless of what's behind the navbar */
+  color: #ffffff;
+  padding: 0;
+  transition: color 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
 }
-
 
 .nav-link:hover {
-
-  opacity: 0.6;
-
+  color: #ffffff;
+  opacity: 0.75;
 }
 
+/* ── SELL / ACTIVATE CTA pill ───────────────────────────────────────────────── */
+.nav-link--cta {
+  /* Beige pill — stands out against the dark navbar without being harsh */
+  background: #D6BFA7;
+  color: #1a1a1a !important;
+  padding: 7px 16px;
+  border-radius: 4px;
+  letter-spacing: 1.5px;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 1;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+.nav-link--cta:hover {
+  background: #c9af94;
+  opacity: 1 !important;
+}
+
+/* ── Pending approval — muted, non-interactive ─────────────────────────────── */
+.nav-link--muted {
+  color: rgba(255, 255, 255, 0.4) !important;
+  cursor: default;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+.nav-link--muted:hover {
+  color: rgba(255, 255, 255, 0.4) !important;
+  opacity: 1 !important;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .navbar {
+    padding: 0 28px;
+    height: 72px;
+  }
+
+  .nav-left,
+  .nav-right {
+    gap: 16px;
+  }
+
+  .nav-logo {
+    font-size: 20px;
+    letter-spacing: 4px;
+  }
+
+  .nav-link {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0 16px;
+    height: 64px;
+  }
+
+  .nav-left,
+  .nav-right {
+    gap: 10px;
+  }
+
+  .nav-logo {
+    font-size: 16px;
+    letter-spacing: 3px;
+  }
+
+  .nav-link {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .nav-link--cta {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+}

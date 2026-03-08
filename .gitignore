@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+### Secrets — never commit real credentials ###
+# The template (.env.example) IS committed; the real values are NOT.
+.env
+.env.local
+.env.production
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

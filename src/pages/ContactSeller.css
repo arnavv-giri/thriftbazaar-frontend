@@ -1,400 +1,495 @@
-@import "../styles/variables.css";
-@import "../styles/animations.css";
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ContactSeller — full chat UI
+   The page sits inside <main> which already has padding-top: 80px (App.css).
+   min-height is calculated against the remaining viewport.
+═══════════════════════════════════════════════════════════════════════════════ */
 
-.contact-seller {
-  background: var(--color-background);
-  min-height: 100vh;
-  padding: var(--spacing-lg);
+/* ── Page shell ────────────────────────────────────────────────────────────── */
+.cs-page {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 80px);
+  background: #f5f5f5;
 }
 
-.back-button {
+/* ── In-page top bar (sticky below the global fixed navbar) ─────────────────── */
+.cs-topbar {
+  position: sticky;
+  /* Stick right at the top of <main> — the global navbar is *above* <main>
+     so top:0 here means just below the 80px navbar gap */
+  top: 0;
+  z-index: 10;
+  background: #1a1a1a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.9rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cs-back {
   background: none;
   border: none;
-  color: var(--color-primary-beige);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  color: #ccc;
+  font-size: 0.9rem;
   cursor: pointer;
-  padding: var(--spacing-md) 0;
-  margin-bottom: var(--spacing-lg);
-  transition: all var(--transition-base);
+  padding: 0;
+  white-space: nowrap;
+  transition: color 0.15s;
 }
+.cs-back:hover { color: #fff; }
 
-.back-button:hover {
-  color: var(--color-text-primary);
-  transform: translateX(-5px);
-}
-
-.contact-seller-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: var(--spacing-2xl);
-  animation: fadeInUp 0.6s ease-out;
-}
-
-/* Seller Sidebar */
-.seller-sidebar {
+/* Live indicator — shown in the top bar */
+.cs-live-indicator {
+  margin-left: auto;
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-.seller-header {
-  background: var(--color-white);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-  text-align: center;
-}
-
-.seller-avatar-large {
-  font-size: 3rem;
-  margin-bottom: var(--spacing-md);
-}
-
-.seller-header h2 {
-  margin: 0 0 var(--spacing-lg) 0;
-  font-size: var(--font-size-lg);
-  color: var(--color-text-primary);
-}
-
-.seller-stats {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-md);
-  background: var(--color-background);
-  border-radius: var(--border-radius-md);
-}
-
-.stat-label {
-  font-size: var(--font-size-xs);
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-semibold);
-}
-
-.stat-value {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary-beige);
-}
-
-/* Product Preview */
-.product-preview {
-  background: var(--color-white);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-}
-
-.product-preview h3 {
-  margin: 0 0 var(--spacing-lg) 0;
-  font-size: var(--font-size-base);
-  color: var(--color-text-primary);
-}
-
-.product-preview-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.product-preview-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: var(--border-radius-md);
-}
-
-.preview-details {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.preview-name {
-  margin: 0;
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-}
-
-.preview-price {
-  margin: 0;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary-beige);
-}
-
-.preview-badge {
+.cs-live-dot {
   display: inline-block;
-  background: var(--color-light-beige);
-  color: var(--color-primary-beige);
-  padding: 4px 12px;
-  border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf50;
+  box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6);
+  animation: cs-live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes cs-live-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); }
+  50%  { box-shadow: 0 0 0 5px rgba(76, 175, 80, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+.cs-live-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #4caf50;
   text-transform: uppercase;
-  width: fit-content;
 }
 
-/* Seller Features */
-.seller-features {
-  background: var(--color-white);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.feature {
+.cs-topbar-info {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: var(--color-background);
-  border-radius: var(--border-radius-md);
-  transition: all var(--transition-base);
+  gap: 0.75rem;
 }
 
-.feature:hover {
-  transform: translateX(4px);
-  box-shadow: var(--shadow-md);
-}
-
-.feature-icon {
+.cs-avatar {
   font-size: 1.5rem;
-}
-
-.feature {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-medium);
-}
-
-/* Messages Section */
-.messages-section {
-  background: var(--color-white);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-  display: flex;
-  flex-direction: column;
-  height: fit-content;
-  max-height: 80vh;
-}
-
-.messages-header {
-  border-bottom: 2px solid var(--color-border);
-  padding-bottom: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
-}
-
-.messages-header h3 {
-  margin: 0 0 var(--spacing-sm) 0;
-  font-size: var(--font-size-lg);
-  color: var(--color-text-primary);
-}
-
-.messages-header p {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-}
-
-/* Messages Container */
-.messages-container {
-  flex: 1;
-  overflow-y: auto;
-  margin-bottom: var(--spacing-lg);
-  padding: var(--spacing-md);
-  background: linear-gradient(135deg, var(--color-background), #fafafa);
-  border-radius: var(--border-radius-md);
-  min-height: 300px;
-}
-
-.empty-messages {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: var(--color-text-secondary);
-  text-align: center;
-}
-
-.message {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-  animation: slideInUp 0.4s ease-out;
-}
-
-.message.seller .message-avatar {
-  background: linear-gradient(135deg, var(--color-light-beige), rgba(214, 191, 167, 0.1));
-}
-
-.message-avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
+  background: #333;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
   flex-shrink: 0;
-  background: var(--color-background);
 }
 
-.message-content {
+.cs-topbar-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.cs-topbar-sub {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+/* ── Body: sidebar + chat ───────────────────────────────────────────────────── */
+.cs-layout {
   flex: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.25rem;
+  max-width: 1100px;
+  width: 100%;
+  margin: 1.25rem auto;
+  padding: 0 1.5rem 1.5rem;
+  align-items: start;
 }
 
-.message-header {
+/* ── Sidebar ────────────────────────────────────────────────────────────────── */
+.cs-sidebar {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1rem;
+  /* Stick below the in-page topbar (~48px) which itself is sticky at top:0
+     of <main>. Use 60px to give a small gap. */
+  position: sticky;
+  top: 60px;
+}
+
+.cs-product-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.cs-product-img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  display: block;
+}
+
+.cs-product-info {
+  padding: 0.85rem 1rem;
+}
+
+.cs-product-name {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #1a1a1a;
+  margin: 0 0 0.3rem;
+}
+
+.cs-product-price {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem;
+}
+
+.cs-product-badge {
+  display: inline-block;
+  background: #f0ebe5;
+  color: #7c5c3e;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.cs-trust-list {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cs-trust-item {
+  display: flex;
   align-items: center;
-  margin-bottom: var(--spacing-xs);
+  gap: 0.6rem;
+  font-size: 0.84rem;
+  color: #444;
+  font-weight: 500;
 }
 
-.message-name {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-}
-
-.message-time {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
-.message-text {
-  background: var(--color-white);
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius-md);
-  color: var(--color-text-primary);
-  line-height: 1.6;
-  box-shadow: var(--shadow-sm);
-}
-
-.message.seller .message-text {
-  background: linear-gradient(135deg, var(--color-light-beige), rgba(214, 191, 167, 0.1));
-  border: 1px solid var(--color-border);
-}
-
-/* Message Form */
-.message-form {
+/* ── Chat panel ─────────────────────────────────────────────────────────────── */
+.cs-chat {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  padding-top: var(--spacing-lg);
-  border-top: 2px solid var(--color-border);
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  /*
+    Do NOT use a fixed height here — that's what causes the flex children
+    (messages + input bar) to get squeezed on smaller viewports.
+    Instead, let the panel grow naturally and give it only a min-height
+    so it never collapses when the conversation is empty.
+  */
+  min-height: 520px;
+  overflow: hidden;
 }
 
-.form-group {
+/* ── Messages area ──────────────────────────────────────────────────────────── */
+.cs-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.25rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0;
+  scroll-behavior: smooth;
 }
 
-.form-input,
-.form-textarea {
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-base);
+/* ── Empty / loading states ─────────────────────────────────────────────────── */
+.cs-state-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #999;
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.cs-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e5e5;
+  border-top-color: #1a1a1a;
+  border-radius: 50%;
+  animation: cs-spin 0.7s linear infinite;
+}
+
+@keyframes cs-spin { to { transform: rotate(360deg); } }
+
+.cs-empty-icon { font-size: 2.5rem; }
+.cs-empty-sub  { font-size: 0.82rem; color: #bbb; }
+
+/* ── Date divider ───────────────────────────────────────────────────────────── */
+.cs-date-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.9rem 0 0.5rem;
+  color: #aaa;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cs-date-divider::before,
+.cs-date-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ebebeb;
+}
+
+/* ── Message bubbles ────────────────────────────────────────────────────────── */
+.cs-bubble-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  animation: cs-pop 0.18s ease-out;
+}
+
+@keyframes cs-pop {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cs-me   { flex-direction: row-reverse; }
+.cs-them { flex-direction: row; }
+
+.cs-bubble-avatar {
+  font-size: 1.1rem;
+  width: 28px;
+  height: 28px;
+  background: #f0ebe5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+.cs-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 65%;
+}
+
+.cs-me .cs-bubble-wrap { align-items: flex-end; }
+
+.cs-bubble {
+  padding: 0.6rem 0.9rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.cs-me .cs-bubble {
+  background: #1a1a1a;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.cs-them .cs-bubble {
+  background: #f0f0f0;
+  color: #1a1a1a;
+  border-bottom-left-radius: 4px;
+}
+
+.cs-optimistic .cs-bubble { opacity: 0.65; }
+
+.cs-bubble-meta {
+  font-size: 0.68rem;
+  color: #aaa;
+  margin-top: 3px;
+  display: flex;
+  gap: 0.2rem;
+}
+
+.cs-read-tick {
+  color: #4caf50;
+  font-size: 0.72rem;
+}
+
+/* ── Error strip ────────────────────────────────────────────────────────────── */
+.cs-error-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff5f5;
+  border-top: 1px solid #feb2b2;
+  color: #c53030;
+  font-size: 0.82rem;
+  padding: 0.5rem 1rem;
+  flex-shrink: 0;
+}
+.cs-error-strip button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #c53030;
+  font-size: 0.95rem;
+  padding: 0 2px;
+}
+
+/* ── Input bar ──────────────────────────────────────────────────────────────── */
+.cs-input-bar {
+  /* Never let this bar be squeezed by the parent flex column */
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;   /* button sits at the bottom of the textarea */
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-top: 2px solid #ebebeb;
+  background: #fafafa;
+  /* Hard floor: even if the chat panel is somehow constrained,
+     the input bar will never collapse below this */
+  min-height: 130px;
+}
+
+/* ── Textarea — the main typing field ──────────────────────────────────────── */
+.cs-textarea {
+  flex: 1;
+  /* flex-shrink: 0 is the KEY fix — prevents the flex algorithm from
+     compressing the textarea below its min-height when the parent
+     container has a constrained height */
+  flex-shrink: 0;
+  height: 100px;      /* explicit pixel height — browsers respect this even
+                         inside a constrained flex parent, unlike min-height */
+  min-height: 100px;
+  max-height: 200px;
+  resize: none;
+  overflow-y: auto;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
   font-family: inherit;
-  color: var(--color-text-primary);
-  transition: all var(--transition-base);
+  color: #1a1a1a;
+  line-height: 1.6;
+  background: #ffffff;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.form-input:focus,
-.form-textarea:focus {
+.cs-textarea:focus {
   outline: none;
-  border-color: var(--color-primary-beige);
-  box-shadow: 0 0 0 3px rgba(214, 191, 167, 0.2);
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.08);
 }
 
-.form-input:disabled,
-.form-textarea:disabled {
-  background: var(--color-background);
+.cs-textarea::placeholder {
+  color: #b8b8b8;
+  font-size: 14px;
+}
+
+.cs-textarea:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* ── Send button ──────────────────────────────────────────────────────────── */
+.cs-send-btn {
+  /* Fixed size — completely decoupled from Button.css variables */
+  flex-shrink: 0;
+  width: 72px;
+  height: 44px;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  margin-bottom: 2px;   /* optical alignment with textarea bottom edge */
+}
+
+.cs-send-btn:hover:not(:disabled) {
+  background: #333333;
+}
+
+.cs-send-btn:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-.form-textarea {
-  resize: vertical;
+/* Spinner inside the send button while a message is in-flight */
+.cs-send-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: cs-spin 0.6s linear infinite;
 }
 
-.form-info {
-  padding: var(--spacing-md);
-  background: linear-gradient(135deg, #dcf5e3, rgba(76, 175, 80, 0.05));
-  border: 1px solid #4caf50;
-  border-radius: var(--border-radius-md);
-  color: #2e7d32;
-  text-align: center;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-}
-
-.form-info p {
-  margin: 0;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .contact-seller-container {
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 820px) {
+  .cs-layout {
     grid-template-columns: 1fr;
+    padding: 0 1rem 1.25rem;
+    gap: 1rem;
   }
 
-  .seller-sidebar {
+  .cs-sidebar {
+    position: static;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-lg);
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
   }
 
-  .seller-header {
-    grid-column: 1 / 3;
-  }
-}
-
-@media (max-width: 768px) {
-  .contact-seller {
-    padding: var(--spacing-md);
-  }
-
-  .seller-sidebar {
-    grid-template-columns: 1fr;
-  }
-
-  .seller-header {
-    grid-column: auto;
-  }
-
-  .messages-section {
+  .cs-chat {
+    height: auto;
     max-height: none;
+    min-height: 500px;
   }
 }
 
-@media (max-width: 480px) {
-  .contact-seller-container {
-    gap: var(--spacing-lg);
-  }
-
-  .messages-container {
-    min-height: 200px;
-  }
-
-  .form-input,
-  .form-textarea {
-    padding: var(--spacing-md);
-  }
+@media (max-width: 520px) {
+  .cs-sidebar       { grid-template-columns: 1fr; }
+  .cs-topbar        { padding: 0.75rem 1rem; }
+  .cs-bubble-wrap   { max-width: 82%; }
+  .cs-input-bar     { padding: 0.75rem 1rem; min-height: 120px; }
+  .cs-textarea      { height: 88px; min-height: 88px; font-size: 15px; }
 }

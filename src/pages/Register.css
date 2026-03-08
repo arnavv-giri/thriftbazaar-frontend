@@ -1,7 +1,7 @@
 @import "../styles/variables.css";
 
 .register-container {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 80px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -148,6 +148,16 @@
   .register-header h1 {
     font-size: var(--font-size-xl);
   }
+}
+
+.register-note {
+  background: #fff8e1;
+  border-left: 3px solid #f9a825;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  color: #5d4037;
 }
 
 @media (max-width: 480px) {

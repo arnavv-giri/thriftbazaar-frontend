@@ -1,9 +1,25 @@
+/* ── Root shell ──────────────────────────────────────────────────────────────── */
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
+/*
+  Global navbar clearance.
+
+  The navbar is position:fixed with an explicit height of 80px (Navbar.css).
+  Every page inside <main> is pushed down by exactly that amount so content
+  never slides under the navbar.
+
+  Special cases:
+    - Home      → uses margin-top: -80px to pull its full-bleed hero back up
+    - Shop      → adds its own padding-top: 40px  (total = 120px, same as before)
+    - ProductDetails → adds padding-top: 40px     (total = 120px, same as before)
+    - ContactSeller  → has its own sticky topbar; min-height uses calc(100vh - 80px)
+*/
 main {
   flex: 1;
+  padding-top: 80px;
+  overflow-x: hidden;   /* prevents horizontal scrollbar from any overflowing child */
 }

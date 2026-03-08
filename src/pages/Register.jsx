@@ -1,156 +1,135 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { registerVendor } from "../api/authApi";
+import { useNavigate, Link } from "react-router-dom";
+import { registerCustomer, loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 import "./Register.css";
 
+/**
+ * Customer registration page.
+ *
+ * Flow:
+ *  1. POST /users  → creates a CUSTOMER account
+ *  2. POST /users/login → get JWT
+ *  3. Store token via AuthContext.login()
+ *  4. Redirect to home
+ *
+ * If the user wants to become a seller they can do so from the
+ * "Become a Seller" page (/become-seller) after logging in.
+ */
 function Register() {
   const navigate = useNavigate();
   const { login } = useAuth();
+
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
+    email:           "",
+    password:        "",
     confirmPassword: "",
-    shopName: "",
-    description: "",
   });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+
+  const [fieldErrors, setFieldErrors] = useState({});
   const [serverError, setServerError] = useState("");
+  const [loading, setLoading]         = useState(false);
 
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Full name is required";
-    }
+  // ── Validation ────────────────────────────────────────────────────────
+  const validate = () => {
+    const errs = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      errs.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
+      errs.email = "Invalid email format";
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      errs.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+      errs.password = "Password must be at least 6 characters";
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+      errs.confirmPassword = "Passwords do not match";
     }
 
-    if (!formData.shopName.trim()) {
-      newErrors.shopName = "Shop name is required";
-    }
-
-    return newErrors;
+    return errs;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+    // Clear field-level error as the user types
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
+  // ── Submit ────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServerError("");
 
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs);
       return;
     }
 
     setLoading(true);
 
     try {
-      const data = await registerVendor({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        shopName: formData.shopName,
-        description: formData.description,
-      });
+      // 1. Create the CUSTOMER account
+      await registerCustomer(formData.email.trim(), formData.password);
 
-      if (data.token) {
-        login(data.token);
-        navigate("/dashboard");
-      } else {
-        navigate("/login");
-      }
+      // 2. Auto-login to get JWT
+      const authData = await loginUser(formData.email.trim(), formData.password);
+
+      // 3. Hydrate context
+      login(authData.token);
+
+      // 4. Go home
+      navigate("/");
     } catch (err) {
-      let errorMessage = "Registration failed. Please try again.";
+      let msg = "Registration failed. Please try again.";
 
-      // Handle specific error status codes from backend
       if (err.response?.status === 409) {
-        errorMessage = "This email is already in use. Please use a different email or sign in.";
-      } else if (err.response?.status === 400) {
-        errorMessage = err.response?.data?.error || "Please fill all required fields.";
-      } else if (err.response?.status === 500) {
-        errorMessage = "Server error. Please try again later.";
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error;
+        msg = "An account with this email already exists.";
+      } else if (err.response?.data?.message) {
+        msg = err.response.data.message;
+      } else if (err.message) {
+        msg = err.message;
       }
 
-      setServerError(errorMessage);
+      setServerError(msg);
       setLoading(false);
     }
   };
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <div className="register-container">
       <div className="register-card">
         <div className="register-header">
-          <h1>Create Your Seller Account</h1>
-          <p className="subtitle">
-            Join ThriftBazaar and start selling today
-          </p>
+          <h1>Create Account</h1>
+          <p className="subtitle">Shop pre-loved fashion on ThriftBazaar</p>
         </div>
 
-        {serverError && (
-          <div className="error-message">{serverError}</div>
-        )}
+        {serverError && <div className="error-message">{serverError}</div>}
 
         <form onSubmit={handleSubmit} className="register-form">
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="name">Full Name *</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="John Doe"
-                value={formData.name}
-                onChange={handleChange}
-                disabled={loading}
-              />
-              {errors.name && (
-                <span className="error-text">{errors.name}</span>
-              )}
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="email">Email *</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="your@email.com"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={loading}
-              />
-              {errors.email && (
-                <span className="error-text">{errors.email}</span>
-              )}
-            </div>
+          <div className="form-group">
+            <label htmlFor="email">Email *</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="your@email.com"
+              value={formData.email}
+              onChange={handleChange}
+              disabled={loading}
+              autoComplete="email"
+            />
+            {fieldErrors.email && <span className="error-text">{fieldErrors.email}</span>}
           </div>
 
           <div className="form-row">
@@ -164,16 +143,15 @@ function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 disabled={loading}
+                autoComplete="new-password"
               />
-              {errors.password && (
-                <span className="error-text">{errors.password}</span>
+              {fieldErrors.password && (
+                <span className="error-text">{fieldErrors.password}</span>
               )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">
-                Confirm Password *
-              </label>
+              <label htmlFor="confirmPassword">Confirm Password *</label>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -182,58 +160,24 @@ function Register() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 disabled={loading}
+                autoComplete="new-password"
               />
-              {errors.confirmPassword && (
-                <span className="error-text">
-                  {errors.confirmPassword}
-                </span>
+              {fieldErrors.confirmPassword && (
+                <span className="error-text">{fieldErrors.confirmPassword}</span>
               )}
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="shopName">Shop Name *</label>
-            <input
-              id="shopName"
-              name="shopName"
-              type="text"
-              placeholder="My Thrift Shop"
-              value={formData.shopName}
-              onChange={handleChange}
-              disabled={loading}
-            />
-            {errors.shopName && (
-              <span className="error-text">{errors.shopName}</span>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="description">Shop Description</label>
-            <textarea
-              id="description"
-              name="description"
-              placeholder="Tell us about your shop and what you sell..."
-              value={formData.description}
-              onChange={handleChange}
-              disabled={loading}
-              rows="4"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            fullWidth
-            loading={loading}
-          >
+          <Button type="submit" variant="primary" size="md" fullWidth loading={loading}>
             Create Account
           </Button>
         </form>
 
         <div className="register-footer">
-          <p>Already have an account?</p>
-          <a href="/login">Sign in here</a>
+          <p>Already have an account? <Link to="/login">Sign in here</Link></p>
+          <p className="register-seller-link">
+            Want to sell? <Link to="/become-seller">Apply to become a seller →</Link>
+          </p>
         </div>
       </div>
     </div>

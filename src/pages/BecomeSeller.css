@@ -1,0 +1,138 @@
+/* ── Container ─────────────────────────────────────────────────────────────── */
+.become-seller-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: #fafafa;
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────────── */
+.become-seller-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.become-seller-card--pending {
+  text-align: center;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+.become-seller-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.become-seller-header .subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 1.75rem;
+  line-height: 1.5;
+}
+
+/* ── Form ───────────────────────────────────────────────────────────────────── */
+.become-seller-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.15s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #1a1a1a;
+}
+
+.error-text {
+  color: #e53e3e;
+  font-size: 0.8rem;
+}
+
+.error-message {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  color: #c53030;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Info box ───────────────────────────────────────────────────────────────── */
+.seller-info-box {
+  background: #fffbeb;
+  border: 1px solid #f6e05e;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: #744210;
+  line-height: 1.5;
+}
+
+/* ── Pending state ──────────────────────────────────────────────────────────── */
+.pending-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.become-seller-card--pending h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.become-seller-card--pending p {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.pending-note {
+  font-size: 0.85rem !important;
+  color: #888 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────────── */
+.become-seller-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.become-seller-footer a {
+  color: #555;
+  text-decoration: none;
+}
+
+.become-seller-footer a:hover {
+  text-decoration: underline;
+}
