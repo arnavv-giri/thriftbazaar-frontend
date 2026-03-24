@@ -1,7 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   Navbar
-   Always dark background so text is visible on every page — white, beige, or
-   dark hero alike. A subtle elevation appears on scroll.
+   Navbar — desktop layout unchanged; mobile hamburger + drawer added below
 ═══════════════════════════════════════════════════════════════════════════════ */
 
 .navbar {
@@ -17,18 +15,13 @@
   padding: 0 60px;
   height: 80px;
 
-  /* Solid dark — readable on every background, every page */
   background: #1a1a1a;
   color: #ffffff;
 
-  /* Always show a subtle bottom edge so the navbar is clearly separated
-     from white-background pages even before the user scrolls */
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
-
   transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 
-/* Scrolled: deepen the shadow for elevation feedback */
 .navbar.scrolled {
   background: #111111;
   box-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
@@ -66,21 +59,15 @@
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
-  /* Full white — always visible regardless of what's behind the navbar */
   color: #ffffff;
   padding: 0;
   transition: color 0.15s ease, opacity 0.15s ease;
   white-space: nowrap;
 }
-
-.nav-link:hover {
-  color: #ffffff;
-  opacity: 0.75;
-}
+.nav-link:hover { color: #ffffff; opacity: 0.75; }
 
 /* ── SELL / ACTIVATE CTA pill ───────────────────────────────────────────────── */
 .nav-link--cta {
-  /* Beige pill — stands out against the dark navbar without being harsh */
   background: #D6BFA7;
   color: #1a1a1a !important;
   padding: 7px 16px;
@@ -91,69 +78,198 @@
   opacity: 1;
   transition: background 0.15s ease, opacity 0.15s ease;
 }
-.nav-link--cta:hover {
-  background: #c9af94;
-  opacity: 1 !important;
-}
+.nav-link--cta:hover { background: #c9af94; opacity: 1 !important; }
 
-/* ── Pending approval — muted, non-interactive ─────────────────────────────── */
+/* ── Pending approval ─────────────────────────────────────────────────────── */
 .nav-link--muted {
   color: rgba(255, 255, 255, 0.4) !important;
   cursor: default;
   font-size: 11px;
   letter-spacing: 1.5px;
 }
-.nav-link--muted:hover {
-  color: rgba(255, 255, 255, 0.4) !important;
-  opacity: 1 !important;
+.nav-link--muted:hover { color: rgba(255, 255, 255, 0.4) !important; opacity: 1 !important; }
+
+/* ── Hamburger button — hidden on desktop ───────────────────────────────────── */
+.nav-hamburger {
+  display: none;
 }
 
-/* ── Responsive ─────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════════
+   Tablet (960px and below) — desktop still, just tighter spacing
+═══════════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
-  .navbar {
-    padding: 0 28px;
-    height: 72px;
-  }
-
-  .nav-left,
-  .nav-right {
-    gap: 16px;
-  }
-
-  .nav-logo {
-    font-size: 20px;
-    letter-spacing: 4px;
-  }
-
-  .nav-link {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-  }
+  .navbar { padding: 0 28px; height: 72px; }
+  .nav-left, .nav-right { gap: 16px; }
+  .nav-logo { font-size: 20px; letter-spacing: 4px; }
+  .nav-link { font-size: 11px; letter-spacing: 1.5px; }
 }
 
-@media (max-width: 640px) {
+/* ═══════════════════════════════════════════════════════════════════════════════
+   Mobile (768px and below) — switch to hamburger menu
+═══════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
   .navbar {
     padding: 0 16px;
-    height: 64px;
+    height: 60px;
   }
 
+  /* Hide desktop nav groups */
   .nav-left,
   .nav-right {
-    gap: 10px;
+    display: none;
   }
 
+  /* Show hamburger */
+  .nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1100;
+    flex-shrink: 0;
+  }
+
+  .nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    transform-origin: center;
+  }
+
+  /* Animate to X when open */
+  .nav-hamburger.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav-hamburger.open span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .nav-hamburger.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Logo stays visible, slightly smaller */
   .nav-logo {
-    font-size: 16px;
+    font-size: 15px;
     letter-spacing: 3px;
   }
+}
 
-  .nav-link {
-    font-size: 10px;
-    letter-spacing: 1px;
-  }
+/* ── Dark overlay behind drawer ─────────────────────────────────────────────── */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1050;
+  animation: fadeOverlay 0.2s ease;
+}
 
-  .nav-link--cta {
-    padding: 5px 10px;
-    font-size: 10px;
-  }
+@keyframes fadeOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Slide-in drawer ─────────────────────────────────────────────────────────── */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  max-width: 85vw;
+  height: 100%;
+  background: #1a1a1a;
+  z-index: 1100;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.nav-drawer--open {
+  transform: translateX(0);
+}
+
+/* Drawer header */
+.nav-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 60px;
+}
+
+.nav-drawer-logo {
+  font-family: "Playfair Display", serif;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #ffffff;
+}
+
+.nav-drawer-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.15s;
+}
+.nav-drawer-close:hover { color: #ffffff; }
+
+/* Drawer links */
+.nav-drawer-links {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0 32px;
+  flex: 1;
+}
+
+.nav-drawer-link {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 14px 24px;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  width: 100%;
+}
+.nav-drawer-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* CTA links (Login / Register) */
+.nav-drawer-link--cta {
+  color: #D6BFA7;
+}
+.nav-drawer-link--cta:hover { color: #e8d5bf; }
+
+/* Logout */
+.nav-drawer-link--logout {
+  color: rgba(255, 100, 100, 0.8);
+}
+.nav-drawer-link--logout:hover { color: #ff6464; }
+
+/* Divider */
+.nav-drawer-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 12px 24px;
 }

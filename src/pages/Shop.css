@@ -374,6 +374,7 @@
 
   .search-wrapper {
     max-width: 100%;
+    width: 100%;
   }
 
   .sort-select {
@@ -386,7 +387,33 @@
   }
 
   .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .price-input {
+    font-size: 16px; /* prevents iOS zoom on input focus */
+  }
+}
+
+/* ── Small phones (iPhone SE etc.) ──────────────────────────────────────── */
+@media (max-width: 400px) {
+  .shop {
+    padding: 16px 4% 48px;
+  }
+
+  .shop-title {
+    font-size: 24px;
+    letter-spacing: 3px;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .loading,
+  .empty {
+    padding: 40px 20px;
   }
 }

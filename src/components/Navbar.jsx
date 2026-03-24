@@ -9,80 +9,80 @@ function Navbar() {
   const { isLoggedIn, role, logout } = useAuth();
 
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Tracks vendor profile state for CUSTOMER users who may have a pending request
-  // null  = not checked yet or not a customer
-  // false = no vendor profile exists
-  // { approved: false } = pending
-  // { approved: true }  = approved but JWT still says CUSTOMER (stale token)
   const [vendorProfile, setVendorProfile] = useState(null);
   const [profileChecked, setProfileChecked] = useState(false);
 
   useEffect(() => {
-    // scrolled class adds box-shadow once the user has scrolled at all
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // When a CUSTOMER is logged in, quietly check if they have a vendor profile
+  // Close menu on route change / resize back to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) setMenuOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   useEffect(() => {
     if (!isLoggedIn || role !== "CUSTOMER") {
       setVendorProfile(null);
       setProfileChecked(false);
       return;
     }
-
     getMyVendorProfile()
       .then((profile) => setVendorProfile(profile))
-      .catch(() => setVendorProfile(false))   // 404 or error → no profile
+      .catch(() => setVendorProfile(false))
       .finally(() => setProfileChecked(true));
   }, [isLoggedIn, role]);
 
   const handleLogout = () => {
     logout();
+    setMenuOpen(false);
     navigate("/");
   };
 
-  // Derived label + destination for the CUSTOMER sell CTA
-  const renderSellCta = () => {
-    if (!profileChecked) return null; // still loading — show nothing, avoid flicker
+  const navTo = (path) => {
+    setMenuOpen(false);
+    navigate(path);
+  };
 
+  const renderSellCta = () => {
+    if (!profileChecked) return null;
     if (vendorProfile === false) {
-      // No profile yet — standard CTA
       return (
-        <button className="nav-link nav-link--cta" onClick={() => navigate("/become-seller")}>
+        <button className="nav-link nav-link--cta" onClick={() => navTo("/become-seller")}>
           SELL
         </button>
       );
     }
-
     if (vendorProfile && !vendorProfile.approved) {
-      // Pending approval
       return (
-        <button
-          className="nav-link nav-link--muted"
-          onClick={() => navigate("/become-seller")}
-          title="Your seller application is under review"
-        >
+        <button className="nav-link nav-link--muted" onClick={() => navTo("/become-seller")}
+          title="Your seller application is under review">
           PENDING ⏳
         </button>
       );
     }
-
     if (vendorProfile && vendorProfile.approved) {
-      // Approved but JWT is stale — nudge them to re-login
       return (
-        <button
-          className="nav-link nav-link--cta"
-          onClick={() => navigate("/become-seller")}
-          title="Log out and back in to access your seller dashboard"
-        >
+        <button className="nav-link nav-link--cta" onClick={() => navTo("/become-seller")}
+          title="Log out and back in to access your seller dashboard">
           ACTIVATE SELLER ✅
         </button>
       );
     }
-
     return null;
   };
 
@@ -91,76 +91,116 @@ function Navbar() {
 
       {/* LEFT */}
       <div className="nav-left">
-        <button className="nav-link" onClick={() => navigate("/")}>HOME</button>
-        <button className="nav-link" onClick={() => navigate("/shop")}>SHOP</button>
-        <button className="nav-link" onClick={() => navigate("/about")}>ABOUT</button>
+        <button className="nav-link" onClick={() => navTo("/")}>HOME</button>
+        <button className="nav-link" onClick={() => navTo("/shop")}>SHOP</button>
+        <button className="nav-link" onClick={() => navTo("/about")}>ABOUT</button>
       </div>
 
       {/* LOGO */}
-      <div className="nav-logo" onClick={() => navigate("/")}>
+      <div className="nav-logo" onClick={() => navTo("/")}>
         THRIFTBAZAAR
       </div>
 
-      {/* RIGHT */}
+      {/* RIGHT — desktop only */}
       <div className="nav-right">
-
-        {/* ADMIN */}
         {isLoggedIn && role === "ADMIN" && (
-          <button className="nav-link" onClick={() => navigate("/admin")}>
-            ADMIN
-          </button>
+          <button className="nav-link" onClick={() => navTo("/admin")}>ADMIN</button>
         )}
-
-        {/* VENDOR: approved — show dashboard */}
         {isLoggedIn && role === "VENDOR" && (
-          <button className="nav-link" onClick={() => navigate("/dashboard")}>
-            DASHBOARD
-          </button>
+          <button className="nav-link" onClick={() => navTo("/dashboard")}>DASHBOARD</button>
         )}
-
-        {/* CUSTOMER: orders + dynamic sell CTA */}
         {isLoggedIn && role === "CUSTOMER" && (
           <>
-            <button className="nav-link" onClick={() => navigate("/orders")}>
-              ORDERS
-            </button>
+            <button className="nav-link" onClick={() => navTo("/orders")}>ORDERS</button>
             {renderSellCta()}
           </>
         )}
-
-        {/* Everyone logged in sees profile + inbox + cart */}
         {isLoggedIn && (
           <>
-            <button className="nav-link" onClick={() => navigate("/profile")}>
-              PROFILE
-            </button>
-            <button className="nav-link" onClick={() => navigate("/inbox")}>
-              INBOX
-            </button>
-            <button className="nav-link" onClick={() => navigate("/cart")}>
-              CART
-            </button>
+            <button className="nav-link" onClick={() => navTo("/profile")}>PROFILE</button>
+            <button className="nav-link" onClick={() => navTo("/inbox")}>INBOX</button>
+            <button className="nav-link" onClick={() => navTo("/cart")}>CART</button>
           </>
         )}
-
         {!isLoggedIn && (
           <>
-            <button className="nav-link" onClick={() => navigate("/login")}>
-              LOGIN
-            </button>
-            <button className="nav-link" onClick={() => navigate("/register")}>
-              REGISTER
-            </button>
+            <button className="nav-link" onClick={() => navTo("/login")}>LOGIN</button>
+            <button className="nav-link" onClick={() => navTo("/register")}>REGISTER</button>
           </>
         )}
-
         {isLoggedIn && (
-          <button className="nav-link" onClick={handleLogout}>
-            LOGOUT
-          </button>
+          <button className="nav-link" onClick={handleLogout}>LOGOUT</button>
         )}
-
       </div>
+
+      {/* HAMBURGER BUTTON — mobile only */}
+      <button
+        className={`nav-hamburger ${menuOpen ? "open" : ""}`}
+        onClick={() => setMenuOpen((o) => !o)}
+        aria-label={menuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={menuOpen}
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+
+      {/* MOBILE DRAWER */}
+      {menuOpen && (
+        <div className="nav-overlay" onClick={() => setMenuOpen(false)} />
+      )}
+      <nav className={`nav-drawer ${menuOpen ? "nav-drawer--open" : ""}`}>
+        <div className="nav-drawer-header">
+          <span className="nav-drawer-logo">THRIFTBAZAAR</span>
+          <button
+            className="nav-drawer-close"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="nav-drawer-links">
+          <button className="nav-drawer-link" onClick={() => navTo("/")}>Home</button>
+          <button className="nav-drawer-link" onClick={() => navTo("/shop")}>Shop</button>
+          <button className="nav-drawer-link" onClick={() => navTo("/about")}>About</button>
+
+          {isLoggedIn && role === "ADMIN" && (
+            <button className="nav-drawer-link" onClick={() => navTo("/admin")}>Admin Dashboard</button>
+          )}
+          {isLoggedIn && role === "VENDOR" && (
+            <button className="nav-drawer-link" onClick={() => navTo("/dashboard")}>Seller Dashboard</button>
+          )}
+          {isLoggedIn && role === "CUSTOMER" && (
+            <>
+              <button className="nav-drawer-link" onClick={() => navTo("/orders")}>Orders</button>
+              {vendorProfile === false && (
+                <button className="nav-drawer-link" onClick={() => navTo("/become-seller")}>Become a Seller</button>
+              )}
+            </>
+          )}
+          {isLoggedIn && (
+            <>
+              <button className="nav-drawer-link" onClick={() => navTo("/profile")}>Profile</button>
+              <button className="nav-drawer-link" onClick={() => navTo("/inbox")}>Inbox</button>
+              <button className="nav-drawer-link" onClick={() => navTo("/cart")}>Cart</button>
+            </>
+          )}
+
+          <div className="nav-drawer-divider" />
+
+          {!isLoggedIn ? (
+            <>
+              <button className="nav-drawer-link nav-drawer-link--cta" onClick={() => navTo("/login")}>Login</button>
+              <button className="nav-drawer-link nav-drawer-link--cta" onClick={() => navTo("/register")}>Register</button>
+            </>
+          ) : (
+            <button className="nav-drawer-link nav-drawer-link--logout" onClick={handleLogout}>Logout</button>
+          )}
+        </div>
+      </nav>
+
     </header>
   );
 }
