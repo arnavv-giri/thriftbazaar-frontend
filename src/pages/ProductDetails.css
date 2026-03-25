@@ -1,7 +1,4 @@
 .pd {
-  /* <main> already contributes 80px from App.css.
-     Add 40px here for visual breathing room = 120px total — same
-     visual result as before but without doubling. */
   padding-top: 40px;
   padding-left: 8%;
   padding-right: 8%;
@@ -13,341 +10,239 @@
 /* BACK BUTTON */
 
 .pd-back {
-
-  margin-bottom:30px;
-
-  font-size:13px;
-
-  letter-spacing:2px;
-
-  border:none;
-
-  background:none;
-
-  cursor:pointer;
-
-  opacity:0.7;
-
+  margin-bottom: 30px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0.7;
 }
 
-.pd-back:hover{
-
-  opacity:1;
-
-}
+.pd-back:hover { opacity: 1; }
 
 
 /* GRID LAYOUT */
 
-.pd-container{
-
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:80px;
-
+.pd-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
 }
 
 
 /* LEFT SIDE */
 
-.pd-main{
-
-  position:relative;
-
-  width:100%;
-  height:600px;
-
-  background:#f4f4f4;
-
-  overflow:hidden;
-
-  border-radius:8px;
-
+.pd-main {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: #f4f4f4;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
-.pd-main img{
-
-  width:100%;
-  height:100%;
-
-  object-fit:cover;
-
-  transition:transform .4s;
-
+.pd-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s;
 }
 
-.pd-main:hover img{
-
-  transform:scale(1.08);
-
-}
+.pd-main:hover img { transform: scale(1.08); }
 
 
 /* CONDITION BADGE */
 
-.pd-condition{
-
-  position:absolute;
-
-  top:20px;
-  left:20px;
-
-  background:black;
-  color:white;
-
-  padding:6px 12px;
-
-  font-size:11px;
-
-  letter-spacing:2px;
-
+.pd-condition {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: black;
+  color: white;
+  padding: 6px 12px;
+  font-size: 11px;
+  letter-spacing: 2px;
 }
 
 
 /* THUMBNAILS */
 
-.pd-thumbs{
-
-  display:flex;
-
-  gap:10px;
-
-  margin-top:15px;
-
+.pd-thumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-.pd-thumbs img{
-
-  width:70px;
-  height:90px;
-
-  object-fit:cover;
-
-  cursor:pointer;
-
-  opacity:.6;
-
-  border-radius:4px;
-
-  transition:.2s;
-
+.pd-thumbs img {
+  width: 70px;
+  height: 90px;
+  object-fit: cover;
+  cursor: pointer;
+  opacity: .6;
+  border-radius: 4px;
+  transition: .2s;
 }
 
-.pd-thumbs img:hover{
-
-  opacity:.9;
-
-}
-
-.pd-thumbs img.active{
-
-  opacity:1;
-
-  border:1px solid black;
-
-}
+.pd-thumbs img:hover { opacity: .9; }
+.pd-thumbs img.active { opacity: 1; border: 1px solid black; }
 
 
 /* CATEGORY */
 
-.pd-category{
-
-  font-size:12px;
-
-  letter-spacing:2px;
-
-  opacity:.6;
-
+.pd-category {
+  font-size: 12px;
+  letter-spacing: 2px;
+  opacity: .6;
 }
 
 
 /* TITLE */
 
-.pd-right h1{
-
-  font-family:"Playfair Display";
-
-  font-size:36px;
-
-  margin:10px 0;
-
+.pd-right h1 {
+  font-family: "Playfair Display";
+  font-size: 36px;
+  margin: 10px 0;
 }
 
 
 /* PRICE */
 
-.pd-price{
-
-  font-size:26px;
-
-  margin-bottom:30px;
-
-  font-weight:500;
-
+.pd-price {
+  font-size: 26px;
+  margin-bottom: 30px;
+  font-weight: 500;
 }
 
 
 /* QUANTITY */
 
-.pd-quantity{
+.pd-quantity { margin-bottom: 20px; }
 
-  margin-bottom:20px;
-
+.pd-quantity label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+  opacity: .7;
 }
 
-.pd-quantity label{
-
-  display:block;
-
-  font-size:12px;
-
-  margin-bottom:6px;
-
-  opacity:.7;
-
-}
-
-.pd-quantity select{
-
-  padding:10px;
-
-  border:1px solid #ddd;
-
-  border-radius:6px;
-
-  width:120px;
-
-  cursor:pointer;
-
+.pd-quantity select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 120px;
+  cursor: pointer;
 }
 
 
 /* FULL WIDTH BUTTON FIX */
 
-.pd-full-btn{
-
-  width:100%;
-
-  margin-bottom:12px;
-
+.pd-full-btn {
+  width: 100%;
+  margin-bottom: 12px;
 }
 
 
+/* META DETAILS */
 
-/* META DETAILS (NOW ON RIGHT SIDE) */
-
-.pd-meta{
-
-  margin-top:30px;
-
-  display:flex;
-
-  gap:40px;
-
+.pd-meta {
+  margin-top: 30px;
+  display: flex;
+  gap: 40px;
 }
 
-.pd-meta-right{
-
-  margin-top:25px;
-
-  padding-top:20px;
-
-  border-top:1px solid #eee;
-
+.pd-meta-right {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
 }
 
-.pd-meta span{
-
-  display:block;
-
-  font-size:11px;
-
-  opacity:.6;
-
-  letter-spacing:1px;
-
+.pd-meta span {
+  display: block;
+  font-size: 11px;
+  opacity: .6;
+  letter-spacing: 1px;
 }
 
-.pd-meta strong{
-
-  font-size:14px;
-
-}
-
+.pd-meta strong { font-size: 14px; }
 
 
 /* SELLER CARD */
 
-.pd-seller-card{
-
-  margin-top:30px;
-
-  display:flex;
-
-  gap:15px;
-
-  padding-top:20px;
-
-  border-top:1px solid #eee;
-
-  align-items:center;
-
+.pd-seller-card {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  align-items: center;
 }
 
-.avatar{
-
-  font-size:28px;
-
-  width:45px;
-
-  height:45px;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  background:#f2f2f2;
-
-  border-radius:50%;
-
+.avatar {
+  font-size: 28px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f2f2f2;
+  border-radius: 50%;
 }
-
 
 
 /* LOADING */
 
-.pd-loading{
-
-  padding-top:200px;
-
-  text-align:center;
-
-  font-size:18px;
-
+.pd-loading {
+  padding-top: 200px;
+  text-align: center;
+  font-size: 18px;
 }
 
 
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE — desktop above is untouched
+═══════════════════════════════════════════════════════════════════ */
 
-/* RESPONSIVE */
-
-@media(max-width:900px){
-
-  .pd-container{
-
-    grid-template-columns:1fr;
-
-    gap:40px;
-
+@media (max-width: 900px) {
+  .pd-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
 
-  .pd-main{
+  .pd-main { height: 400px; }
+}
 
-    height:400px;
-
+@media (max-width: 768px) {
+  .pd {
+    padding-top: 24px;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 48px;
   }
 
+  .pd-main { height: 320px; }
+
+  .pd-right h1 { font-size: 26px; }
+
+  .pd-price { font-size: 22px; margin-bottom: 20px; }
+
+  .pd-quantity select {
+    width: 100%;
+    font-size: 16px; /* prevent iOS zoom */
+  }
+
+  .pd-meta {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pd-thumbs img {
+    width: 56px;
+    height: 72px;
+  }
+}
+
+@media (max-width: 400px) {
+  .pd-main { height: 260px; }
+  .pd-right h1 { font-size: 22px; }
 }

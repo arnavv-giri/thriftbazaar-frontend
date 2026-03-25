@@ -9,6 +9,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Prevent horizontal scroll on the whole page */
+  overflow-x: hidden;
 }
 
 body {
@@ -20,6 +22,8 @@ body {
   font-weight: var(--font-weight-regular);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent body-level horizontal scroll */
+  overflow-x: hidden;
 }
 
 #root {
@@ -72,6 +76,8 @@ select {
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-base);
   transition: all var(--transition-base);
+  /* Ensure inputs don't overflow their containers */
+  max-width: 100%;
 }
 
 input:focus,
@@ -84,6 +90,12 @@ select:focus {
 
 input::placeholder {
   color: var(--color-text-secondary);
+}
+
+/* Images — globally responsive */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Scrollbar */
@@ -112,5 +124,14 @@ input::placeholder {
 
   h2 {
     font-size: var(--font-size-2xl);
+  }
+
+  /* On mobile, inputs inside forms become full-width naturally
+     since we set max-width:100% above */
+  input,
+  textarea,
+  select {
+    /* Prevent iOS auto-zoom: font-size must be at least 16px on focus */
+    font-size: 16px;
   }
 }

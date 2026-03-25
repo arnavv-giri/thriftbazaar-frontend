@@ -63,6 +63,7 @@
   border-radius: 6px;
   font-size: 0.95rem;
   transition: border-color 0.15s;
+  width: 100%;
 }
 
 .form-group input:focus {
@@ -135,4 +136,25 @@
 
 .become-seller-footer a:hover {
   text-decoration: underline;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 480px) {
+  .become-seller-container {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .become-seller-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .become-seller-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .form-group input {
+    font-size: 16px; /* prevent iOS zoom on input focus */
+  }
 }

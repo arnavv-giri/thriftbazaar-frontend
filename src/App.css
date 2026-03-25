@@ -23,3 +23,10 @@ main {
   padding-top: 80px;
   overflow-x: hidden;   /* prevents horizontal scrollbar from any overflowing child */
 }
+
+/* ── Mobile: navbar shrinks to 60px, reduce main clearance accordingly ───── */
+@media (max-width: 768px) {
+  main {
+    padding-top: 60px;
+  }
+}
