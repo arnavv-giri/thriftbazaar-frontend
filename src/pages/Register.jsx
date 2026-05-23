@@ -7,14 +7,6 @@ import "./Register.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
 
-/**
- * Register page — email/password + Google/GitHub OAuth2.
- *
- * OAuth2 path is identical to the login page — clicking "Continue with Google"
- * starts the same backend flow.  If the Google email already has an account,
- * OAuthService finds and logs in that user; if not, it creates a new CUSTOMER.
- * Either way, the user lands at /oauth2/redirect with a valid JWT.
- */
 function Register() {
   const navigate  = useNavigate();
   const { login } = useAuth();
@@ -26,14 +18,13 @@ function Register() {
   const [serverError, setServerError] = useState("");
   const [loading, setLoading]         = useState(false);
 
-  // ── Validation ────────────────────────────────────────────────────────
   const validate = () => {
     const errs = {};
-    if (!formData.email.trim())                                errs.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = "Invalid email format";
-    if (!formData.password)                                    errs.password = "Password is required";
-    else if (formData.password.length < 6)                     errs.password = "Password must be at least 6 characters";
-    if (formData.password !== formData.confirmPassword)        errs.confirmPassword = "Passwords do not match";
+    if (!formData.email.trim())                                    errs.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))  errs.email = "Invalid email format";
+    if (!formData.password)                                        errs.password = "Password is required";
+    else if (formData.password.length < 6)                         errs.password = "Password must be at least 6 characters";
+    if (formData.password !== formData.confirmPassword)            errs.confirmPassword = "Passwords do not match";
     return errs;
   };
 
@@ -43,13 +34,11 @@ function Register() {
     if (fieldErrors[name]) setFieldErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // ── Email / password submit ───────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServerError("");
     const errs = validate();
     if (Object.keys(errs).length > 0) { setFieldErrors(errs); return; }
-
     setLoading(true);
     try {
       await registerCustomer(formData.email.trim(), formData.password);
@@ -58,20 +47,14 @@ function Register() {
       navigate("/");
     } catch (err) {
       let msg = "Registration failed. Please try again.";
-      if      (err.response?.status === 409)        msg = "An account with this email already exists.";
-      else if (err.response?.data?.message)         msg = err.response.data.message;
-      else if (err.message)                         msg = err.message;
+      if      (err.response?.status === 409)   msg = "An account with this email already exists.";
+      else if (err.response?.data?.message)    msg = err.response.data.message;
+      else if (err.message)                    msg = err.message;
       setServerError(msg);
       setLoading(false);
     }
   };
 
-  // ── OAuth2 ────────────────────────────────────────────────────────────
-  const handleOAuth2 = (provider) => {
-    window.location.href = `${API_BASE}/oauth2/authorization/${provider}`;
-  };
-
-  // ── Render ────────────────────────────────────────────────────────────
   return (
     <div className="register-container">
       <div className="register-card">
@@ -82,42 +65,36 @@ function Register() {
 
         {serverError && <div className="error-message">{serverError}</div>}
 
-        {/* ── Social sign-up buttons ── */}
+        {/* ── Social sign-up — plain <a> tags, no JS redirect ── */}
         <div className="oauth-buttons">
-          <button
+          <a
+            href={`${API_BASE}/oauth2/authorization/google`}
             className="oauth-btn oauth-btn--google"
-            onClick={() => handleOAuth2("google")}
-            type="button"
           >
             <GoogleIcon />
             Sign up with Google
-          </button>
+          </a>
 
-          <button
+          <a
+            href={`${API_BASE}/oauth2/authorization/github`}
             className="oauth-btn oauth-btn--github"
-            onClick={() => handleOAuth2("github")}
-            type="button"
           >
             <GitHubIcon />
             Sign up with GitHub
-          </button>
+          </a>
         </div>
 
         <div className="oauth-divider">
           <span>or sign up with email</span>
         </div>
 
-        {/* ── Email / password form ── */}
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
             <label htmlFor="email">Email *</label>
             <input
-              id="email" name="email" type="email"
-              placeholder="your@email.com"
-              value={formData.email}
-              onChange={handleChange}
-              disabled={loading}
-              autoComplete="email"
+              id="email" name="email" type="email" placeholder="your@email.com"
+              value={formData.email} onChange={handleChange}
+              disabled={loading} autoComplete="email"
             />
             {fieldErrors.email && <span className="error-text">{fieldErrors.email}</span>}
           </div>
@@ -126,29 +103,20 @@ function Register() {
             <div className="form-group">
               <label htmlFor="password">Password *</label>
               <input
-                id="password" name="password" type="password"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleChange}
-                disabled={loading}
-                autoComplete="new-password"
+                id="password" name="password" type="password" placeholder="••••••••"
+                value={formData.password} onChange={handleChange}
+                disabled={loading} autoComplete="new-password"
               />
               {fieldErrors.password && <span className="error-text">{fieldErrors.password}</span>}
             </div>
-
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirm Password *</label>
               <input
-                id="confirmPassword" name="confirmPassword" type="password"
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                disabled={loading}
-                autoComplete="new-password"
+                id="confirmPassword" name="confirmPassword" type="password" placeholder="••••••••"
+                value={formData.confirmPassword} onChange={handleChange}
+                disabled={loading} autoComplete="new-password"
               />
-              {fieldErrors.confirmPassword && (
-                <span className="error-text">{fieldErrors.confirmPassword}</span>
-              )}
+              {fieldErrors.confirmPassword && <span className="error-text">{fieldErrors.confirmPassword}</span>}
             </div>
           </div>
 

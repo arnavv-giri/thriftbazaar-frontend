@@ -5,21 +5,6 @@ import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 import "./Login.css";
 
-/**
- * Login page — email/password + Google/GitHub OAuth2.
- *
- * OAuth2 flow:
- *   Click "Continue with Google"
- *     → browser navigates to backend GET /oauth2/authorization/google
- *     → Spring Security redirects to Google's consent screen
- *     → Google redirects to backend GET /oauth2/callback/google
- *     → backend calls OAuthService, issues JWT, redirects to
- *       frontend /oauth2/redirect?token=<JWT>
- *     → OAuth2Redirect.jsx calls login(token) and routes to dashboard.
- *
- * The VITE_API_BASE_URL env var already points at the correct backend,
- * so we derive the OAuth2 URL from it.
- */
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
 
 function Login() {
@@ -31,39 +16,23 @@ function Login() {
   const navigate  = useNavigate();
   const { login } = useAuth();
 
-  // ── Email / password login ────────────────────────────────────────────
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
-    if (!email.trim() || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
+    if (!email.trim() || !password) { setError("Please fill in all fields"); return; }
     setLoading(true);
-
     try {
       const data = await loginUser(email.trim(), password);
       login(data.token);
-
-      if (data.role === "VENDOR")      navigate("/dashboard");
-      else if (data.role === "ADMIN")  navigate("/admin");
-      else                             navigate("/");
+      if (data.role === "VENDOR")     navigate("/dashboard");
+      else if (data.role === "ADMIN") navigate("/admin");
+      else                            navigate("/");
     } catch (err) {
-      const msg = err.response?.data?.message || "Invalid email or password";
-      setError(msg);
+      setError(err.response?.data?.message || "Invalid email or password");
       setLoading(false);
     }
   };
 
-  // ── OAuth2 — just navigate the browser to the backend endpoint ────────
-  const handleOAuth2 = (provider) => {
-    // Full-page redirect — Spring Security takes over from here.
-    window.location.href = `${API_BASE}/oauth2/authorization/${provider}`;
-  };
-
-  // ── Render ────────────────────────────────────────────────────────────
   return (
     <div className="login-container">
       <div className="login-card">
@@ -74,59 +43,46 @@ function Login() {
 
         {error && <div className="error-message">{error}</div>}
 
-        {/* ── Social login buttons ── */}
+        {/* ── Social login — plain <a> tags, no JS redirect ── */}
         <div className="oauth-buttons">
-          <button
+          <a
+            href={`${API_BASE}/oauth2/authorization/google`}
             className="oauth-btn oauth-btn--google"
-            onClick={() => handleOAuth2("google")}
-            type="button"
           >
             <GoogleIcon />
             Continue with Google
-          </button>
+          </a>
 
-          <button
+          <a
+            href={`${API_BASE}/oauth2/authorization/github`}
             className="oauth-btn oauth-btn--github"
-            onClick={() => handleOAuth2("github")}
-            type="button"
           >
             <GitHubIcon />
             Continue with GitHub
-          </button>
+          </a>
         </div>
 
         <div className="oauth-divider">
           <span>or continue with email</span>
         </div>
 
-        {/* ── Email / password form ── */}
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
-              id="email"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-              autoComplete="email"
+              id="email" type="email" placeholder="your@email.com"
+              value={email} onChange={(e) => setEmail(e.target.value)}
+              disabled={loading} autoComplete="email"
             />
           </div>
-
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-              autoComplete="current-password"
+              id="password" type="password" placeholder="••••••••"
+              value={password} onChange={(e) => setPassword(e.target.value)}
+              disabled={loading} autoComplete="current-password"
             />
           </div>
-
           <Button type="submit" variant="primary" size="md" fullWidth loading={loading}>
             Sign In
           </Button>
@@ -139,8 +95,6 @@ function Login() {
     </div>
   );
 }
-
-// ── Inline SVG icons (no extra dep needed) ────────────────────────────────────
 
 function GoogleIcon() {
   return (
