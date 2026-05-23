@@ -21,6 +21,7 @@ import BecomeSeller from "./pages/BecomeSeller";
 import AdminDashboard from "./pages/AdminDashboard";
 import Inbox from "./pages/Inbox";
 import Profile from "./pages/Profile";
+import OAuth2Redirect from "./pages/OAuth2Redirect";
 
 import "./App.css";
 
@@ -139,6 +140,12 @@ function App() {
                 <Route
                   path="/about"
                   element={<About />}
+                />
+
+                {/* OAUTH2 — landing page after Google / GitHub login */}
+                <Route
+                  path="/oauth2/redirect"
+                  element={<OAuth2Redirect />}
                 />
 
                 {/* fallback */}
