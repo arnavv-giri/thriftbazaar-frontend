@@ -7,6 +7,10 @@ import "./Login.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
 
+// OAuth2 — manual endpoints (no Spring OAuth2 client)
+const GOOGLE_AUTH_URL = `${API_BASE}/auth/google`;
+const GITHUB_AUTH_URL = `${API_BASE}/auth/github`;
+
 function Login() {
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +50,7 @@ function Login() {
         {/* ── Social login — plain <a> tags, no JS redirect ── */}
         <div className="oauth-buttons">
           <a
-            href={`${API_BASE}/oauth2/authorization/google`}
+            href={GOOGLE_AUTH_URL}
             className="oauth-btn oauth-btn--google"
           >
             <GoogleIcon />
@@ -54,7 +58,7 @@ function Login() {
           </a>
 
           <a
-            href={`${API_BASE}/oauth2/authorization/github`}
+            href={GITHUB_AUTH_URL}
             className="oauth-btn oauth-btn--github"
           >
             <GitHubIcon />

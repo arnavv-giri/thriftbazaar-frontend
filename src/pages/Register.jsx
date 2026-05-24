@@ -7,6 +7,9 @@ import "./Register.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
 
+const GOOGLE_AUTH_URL = `${API_BASE}/auth/google`;
+const GITHUB_AUTH_URL = `${API_BASE}/auth/github`;
+
 function Register() {
   const navigate  = useNavigate();
   const { login } = useAuth();
@@ -68,7 +71,7 @@ function Register() {
         {/* ── Social sign-up — plain <a> tags, no JS redirect ── */}
         <div className="oauth-buttons">
           <a
-            href={`${API_BASE}/oauth2/authorization/google`}
+            href={GOOGLE_AUTH_URL}
             className="oauth-btn oauth-btn--google"
           >
             <GoogleIcon />
@@ -76,7 +79,7 @@ function Register() {
           </a>
 
           <a
-            href={`${API_BASE}/oauth2/authorization/github`}
+            href={GITHUB_AUTH_URL}
             className="oauth-btn oauth-btn--github"
           >
             <GitHubIcon />
