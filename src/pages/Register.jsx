@@ -7,8 +7,8 @@ import "./Register.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
 
-const GOOGLE_AUTH_URL = `${API_BASE}/auth/google`;
-const GITHUB_AUTH_URL = `${API_BASE}/auth/github`;
+const GOOGLE_AUTH_URL = `${API_BASE}/api/auth/google`;
+const GITHUB_AUTH_URL = `${API_BASE}/api/auth/github`;
 
 function Register() {
   const navigate  = useNavigate();

@@ -8,8 +8,8 @@ import "./Login.css";
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
 
 // OAuth2 — manual endpoints (no Spring OAuth2 client)
-const GOOGLE_AUTH_URL = `${API_BASE}/auth/google`;
-const GITHUB_AUTH_URL = `${API_BASE}/auth/github`;
+const GOOGLE_AUTH_URL = `${API_BASE}/api/auth/google`;
+const GITHUB_AUTH_URL = `${API_BASE}/api/auth/github`;
 
 function Login() {
   const [email, setEmail]       = useState("");
