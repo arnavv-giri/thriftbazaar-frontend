@@ -5,11 +5,41 @@ import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 import "./Login.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
+const API_BASE      = import.meta.env.VITE_API_BASE_URL      || "http://localhost:8081";
+const GOOGLE_ID     = import.meta.env.VITE_GOOGLE_CLIENT_ID  || "";
+const GITHUB_ID     = import.meta.env.VITE_GITHUB_CLIENT_ID  || "";
+const CALLBACK_BASE = API_BASE; // backend handles /api/auth/google/callback
 
-// OAuth2 — manual endpoints (no Spring OAuth2 client)
-const GOOGLE_AUTH_URL = `${API_BASE}/api/auth/google`;
-const GITHUB_AUTH_URL = `${API_BASE}/api/auth/github`;
+/**
+ * Build the Google authorization URL directly in the browser.
+ * The browser goes straight to accounts.google.com — no backend hop needed.
+ * Google then redirects to our backend callback URL after the user consents.
+ */
+function getGoogleAuthUrl() {
+  const callbackUrl = `${CALLBACK_BASE}/api/auth/google/callback`;
+  const params = new URLSearchParams({
+    client_id:     GOOGLE_ID,
+    redirect_uri:  callbackUrl,
+    response_type: "code",
+    scope:         "openid email profile",
+    access_type:   "offline",
+    prompt:        "select_account",
+  });
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+
+/**
+ * Build the GitHub authorization URL directly in the browser.
+ */
+function getGithubAuthUrl() {
+  const callbackUrl = `${CALLBACK_BASE}/api/auth/github/callback`;
+  const params = new URLSearchParams({
+    client_id:    GITHUB_ID,
+    redirect_uri: callbackUrl,
+    scope:        "user:email",
+  });
+  return `https://github.com/login/oauth/authorize?${params.toString()}`;
+}
 
 function Login() {
   const [email, setEmail]       = useState("");
@@ -47,18 +77,17 @@ function Login() {
 
         {error && <div className="error-message">{error}</div>}
 
-        {/* ── Social login — plain <a> tags, no JS redirect ── */}
+        {/* Social login — goes directly to Google/GitHub, no backend hop */}
         <div className="oauth-buttons">
           <a
-            href={GOOGLE_AUTH_URL}
+            href={getGoogleAuthUrl()}
             className="oauth-btn oauth-btn--google"
           >
             <GoogleIcon />
             Continue with Google
           </a>
-
           <a
-            href={GITHUB_AUTH_URL}
+            href={getGithubAuthUrl()}
             className="oauth-btn oauth-btn--github"
           >
             <GitHubIcon />

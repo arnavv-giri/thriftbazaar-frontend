@@ -5,18 +5,39 @@ import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 import "./Register.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
+const API_BASE      = import.meta.env.VITE_API_BASE_URL      || "http://localhost:8081";
+const GOOGLE_ID     = import.meta.env.VITE_GOOGLE_CLIENT_ID  || "";
+const GITHUB_ID     = import.meta.env.VITE_GITHUB_CLIENT_ID  || "";
+const CALLBACK_BASE = API_BASE;
 
-const GOOGLE_AUTH_URL = `${API_BASE}/api/auth/google`;
-const GITHUB_AUTH_URL = `${API_BASE}/api/auth/github`;
+function getGoogleAuthUrl() {
+  const callbackUrl = `${CALLBACK_BASE}/api/auth/google/callback`;
+  const params = new URLSearchParams({
+    client_id:     GOOGLE_ID,
+    redirect_uri:  callbackUrl,
+    response_type: "code",
+    scope:         "openid email profile",
+    access_type:   "offline",
+    prompt:        "select_account",
+  });
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+
+function getGithubAuthUrl() {
+  const callbackUrl = `${CALLBACK_BASE}/api/auth/github/callback`;
+  const params = new URLSearchParams({
+    client_id:    GITHUB_ID,
+    redirect_uri: callbackUrl,
+    scope:        "user:email",
+  });
+  return `https://github.com/login/oauth/authorize?${params.toString()}`;
+}
 
 function Register() {
   const navigate  = useNavigate();
   const { login } = useAuth();
 
-  const [formData, setFormData] = useState({
-    email: "", password: "", confirmPassword: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "", confirmPassword: "" });
   const [fieldErrors, setFieldErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading]         = useState(false);
@@ -68,20 +89,12 @@ function Register() {
 
         {serverError && <div className="error-message">{serverError}</div>}
 
-        {/* ── Social sign-up — plain <a> tags, no JS redirect ── */}
         <div className="oauth-buttons">
-          <a
-            href={GOOGLE_AUTH_URL}
-            className="oauth-btn oauth-btn--google"
-          >
+          <a href={getGoogleAuthUrl()} className="oauth-btn oauth-btn--google">
             <GoogleIcon />
             Sign up with Google
           </a>
-
-          <a
-            href={GITHUB_AUTH_URL}
-            className="oauth-btn oauth-btn--github"
-          >
+          <a href={getGithubAuthUrl()} className="oauth-btn oauth-btn--github">
             <GitHubIcon />
             Sign up with GitHub
           </a>
@@ -94,35 +107,24 @@ function Register() {
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
             <label htmlFor="email">Email *</label>
-            <input
-              id="email" name="email" type="email" placeholder="your@email.com"
-              value={formData.email} onChange={handleChange}
-              disabled={loading} autoComplete="email"
-            />
+            <input id="email" name="email" type="email" placeholder="your@email.com"
+              value={formData.email} onChange={handleChange} disabled={loading} autoComplete="email" />
             {fieldErrors.email && <span className="error-text">{fieldErrors.email}</span>}
           </div>
-
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="password">Password *</label>
-              <input
-                id="password" name="password" type="password" placeholder="••••••••"
-                value={formData.password} onChange={handleChange}
-                disabled={loading} autoComplete="new-password"
-              />
+              <input id="password" name="password" type="password" placeholder="••••••••"
+                value={formData.password} onChange={handleChange} disabled={loading} autoComplete="new-password" />
               {fieldErrors.password && <span className="error-text">{fieldErrors.password}</span>}
             </div>
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirm Password *</label>
-              <input
-                id="confirmPassword" name="confirmPassword" type="password" placeholder="••••••••"
-                value={formData.confirmPassword} onChange={handleChange}
-                disabled={loading} autoComplete="new-password"
-              />
+              <input id="confirmPassword" name="confirmPassword" type="password" placeholder="••••••••"
+                value={formData.confirmPassword} onChange={handleChange} disabled={loading} autoComplete="new-password" />
               {fieldErrors.confirmPassword && <span className="error-text">{fieldErrors.confirmPassword}</span>}
             </div>
           </div>
-
           <Button type="submit" variant="primary" size="md" fullWidth loading={loading}>
             Create Account
           </Button>
