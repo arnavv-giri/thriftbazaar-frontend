@@ -12,7 +12,7 @@ import axios from "axios";
  *   .env.production   → production build   (https://api.yourdomain.com)
  */
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: (import.meta.env.VITE_API_BASE_URL || "http://localhost:8081").replace(/\/$/, ""),
 });
 
 api.interceptors.request.use((config) => {

@@ -5,10 +5,10 @@ import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 import "./Login.css";
 
-const API_BASE      = import.meta.env.VITE_API_BASE_URL      || "http://localhost:8081";
+const API_BASE      = (import.meta.env.VITE_API_BASE_URL      || "http://localhost:8081").replace(/\/$/, "");
 const GOOGLE_ID     = import.meta.env.VITE_GOOGLE_CLIENT_ID  || "";
 const GITHUB_ID     = import.meta.env.VITE_GITHUB_CLIENT_ID  || "";
-const CALLBACK_BASE = API_BASE; // backend handles /api/auth/google/callback
+const CALLBACK_BASE = API_BASE;
 
 /**
  * Build the Google authorization URL directly in the browser.
